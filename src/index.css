@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-ground font-sans text-ink antialiased;
+    margin: 0;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-800;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-panel border border-line bg-white shadow-panel;
+  }
+
+  .panel-header {
+    @apply flex items-center justify-between gap-4 border-b border-line px-5 py-4;
+  }
+
+  .data-table {
+    @apply w-full border-collapse text-left text-sm;
+  }
+
+  .data-table thead th {
+    @apply whitespace-nowrap px-4 py-3 text-xs font-medium text-faint;
+  }
+
+  .data-table tbody td {
+    @apply border-t border-line px-4 py-3 align-middle text-ink;
+  }
+
+  .data-table tbody tr:hover {
+    @apply bg-ground/60;
+  }
+}
