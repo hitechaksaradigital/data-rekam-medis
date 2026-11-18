@@ -19,7 +19,7 @@ export interface RecordFilter {
 const WITH_RELATIONS = `
   *,
   patient:patients(id, no_rm, full_name, nik, date_of_birth, allergies),
-  doctor:profiles(id, full_name, sip_number)
+  doctor:profiles!medical_records_doctor_id_fkey(id, full_name, sip_number)
 `;
 
 export function useMedicalRecords(filter: RecordFilter) {

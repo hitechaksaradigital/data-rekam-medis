@@ -34,7 +34,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
     let aktif = true;
@@ -43,14 +44,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!aktif) return;
       setSession(data.session);
       setUser(data.session?.user ?? null);
-      setIsLoading(false);
+      if (data.session?.user) setProfileLoading(true);
+      setSessionLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!aktif) return;
       setSession(nextSession);
       setUser(nextSession?.user ?? null);
-      setIsLoading(false);
+      if (nextSession?.user) setProfileLoading(true);
+      setSessionLoading(false);
     });
 
     return () => {
@@ -62,20 +65,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshProfile = useCallback(async () => {
     if (!user) {
       setProfile(null);
+      setProfileLoading(false);
       return;
     }
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .maybeSingle();
+    setProfileLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
 
-    if (error) {
-      console.error('Gagal memuat profil:', error.message);
-      setProfile(null);
-      return;
+      if (error) {
+        console.error('Gagal memuat profil:', error.message);
+        setProfile(null);
+        return;
+      }
+      setProfile(data);
+    } finally {
+      setProfileLoading(false);
     }
-    setProfile(data);
   }, [user]);
 
   useEffect(() => {
@@ -109,13 +118,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       profile,
       role: profile?.role ?? null,
-      isLoading,
+      isLoading: sessionLoading || profileLoading,
       signIn,
       signUp,
       signOut,
       refreshProfile,
     }),
-    [session, user, profile, isLoading, signIn, signUp, signOut, refreshProfile],
+    [session, user, profile, sessionLoading, profileLoading, signIn, signUp, signOut, refreshProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -64,6 +64,19 @@ npm run preview     # pratinjau build produksi
 
 ## 4. Menyiapkan Supabase
 
+> **Status saat ini:** project `data-rekam-medis` (ref `wkanmcwwzwnnerlhcmua`, region `ap-southeast-1`) sudah dibuat dan migrasi `0001_initial.sql` sudah diterapkan. File `.env` sudah berisi URL dan publishable key project tersebut.
+
+Akun yang sudah dibuat untuk pengujian ( **segera ganti kata sandinya** ):
+
+| Email | Peran | Kata sandi |
+| --- | --- | --- |
+| `admin@rekammedis.id` | admin | `RekamMedis2026!` |
+| `dokter@rekammedis.id` | dokter | `RekamMedis2026!` |
+
+Data contoh: pasien `Siti Aminah` (`RM-2026-0001`) dengan satu rekam medis final. Hapus atau ganti sebelum pemakaian produksi.
+
+Untuk project baru (misalnya VPC/deploy lain):
+
 1. Buat project Supabase baru.
 2. Buka **SQL Editor**, jalankan seluruh isi `supabase/migrations/0001_initial.sql`.
    Migrasi ini membuat tabel `profiles`, `patients`, `medical_records`, mengaktifkan **RLS** pada semuanya, membuat trigger audit, RPC `update_vital_signs`, dan generator `no_rm`.
