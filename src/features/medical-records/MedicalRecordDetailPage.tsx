@@ -12,7 +12,7 @@ import { Modal } from '@/components/ui/modal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { translateError } from '@/utils/translateError';
-import { formatTanggalWaktu, hitungUmur } from '@/utils/format';
+import { formatSIP, formatTanggalWaktu, hitungUmur } from '@/utils/format';
 import { toVitalSigns } from '@/types';
 import { useFinalizeRecord, useMedicalRecord } from './api';
 import { VitalSignsModal } from './VitalSignsModal';
@@ -177,7 +177,7 @@ export function MedicalRecordDetailPage() {
                 <dt className="text-xs text-faint">Dokter pemeriksa</dt>
                 <dd className="mt-0.5 font-medium text-ink">{record.doctor?.full_name ?? '-'}</dd>
                 {record.doctor?.sip_number && (
-                  <dd className="mt-0.5 text-xs text-faint">SIP {record.doctor.sip_number}</dd>
+                  <dd className="mt-0.5 text-xs text-faint">{formatSIP(record.doctor.sip_number)}</dd>
                 )}
               </div>
               <div>

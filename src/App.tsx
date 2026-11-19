@@ -10,6 +10,7 @@ import { MedicalRecordsPage } from '@/features/medical-records/MedicalRecordsPag
 import { MedicalRecordFormPage } from '@/features/medical-records/MedicalRecordFormPage';
 import { MedicalRecordDetailPage } from '@/features/medical-records/MedicalRecordDetailPage';
 import { UsersPage } from '@/features/users/UsersPage';
+import { PrescriptionsPage } from '@/features/prescriptions/PrescriptionsPage';
 
 export function App() {
   return (
@@ -24,6 +25,7 @@ export function App() {
           <Route path="pasien/:id/edit" element={<ProtectedRoute allowedRoles={['admin']}><PatientFormPage /></ProtectedRoute>} />
           <Route path="pasien/:id" element={<PatientDetailPage />} />
           <Route path="rekam-medis" element={<MedicalRecordsPage />} />
+          <Route path="resep" element={<PrescriptionsPage />} />
           <Route path="rekam-medis/baru" element={<MedicalRecordFormPage />} />
           <Route path="rekam-medis/:id/edit" element={<ProtectedRoute allowedRoles={['dokter']}><MedicalRecordFormPage /></ProtectedRoute>} />
           <Route path="rekam-medis/:id" element={<MedicalRecordDetailPage />} />

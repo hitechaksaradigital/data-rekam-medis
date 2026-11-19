@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Activity, FileText, LayoutDashboard, LogOut, ShieldCheck, Users, X } from 'lucide-react';
+import { Activity, FileText, LayoutDashboard, LogOut, Pill, ShieldCheck, Users, X } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { cn } from '@/lib/utils';
 import { inisial } from '@/utils/format';
@@ -21,6 +21,7 @@ const navItems: NavItem[] = [
   { to: '/', label: 'Ringkasan', icon: LayoutDashboard },
   { to: '/pasien', label: 'Data Pasien', icon: Users },
   { to: '/rekam-medis', label: 'Rekam Medis', icon: FileText },
+  { to: '/resep', label: 'Resep Obat', icon: Pill },
   { to: '/pengguna', label: 'Pengguna', icon: ShieldCheck, roles: ['admin'] },
 ];
 

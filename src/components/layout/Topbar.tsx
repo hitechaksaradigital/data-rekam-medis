@@ -1,5 +1,6 @@
 import { Menu, Stethoscope } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { formatSIP } from '@/utils/format';
 
 export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
   const { role, profile } = useAuth();
@@ -23,7 +24,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
 
       <div className="ml-auto flex items-center gap-3">
         <span className="hidden text-xs text-faint sm:inline">
-          {profile?.sip_number ? `SIP ${profile.sip_number}` : ''}
+          {profile?.sip_number ? formatSIP(profile.sip_number) : ''}
         </span>
         <span className="rounded border border-line bg-ground px-2.5 py-1 text-[11px] font-medium capitalize text-subtle">
           {role ?? 'perawat'}

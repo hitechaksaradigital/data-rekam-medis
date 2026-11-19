@@ -62,3 +62,9 @@ export function inisial(nama: string): string {
 export function formatAngka(value: number): string {
   return new Intl.NumberFormat('id-ID').format(value);
 }
+
+/** "SIP-2026-00123" tetap apa adanya, "12345" menjadi "SIP 12345". */
+export function formatSIP(sip: string): string {
+  const bersih = sip.trim();
+  return /^sip/i.test(bersih) ? bersih : `SIP ${bersih}`;
+}
