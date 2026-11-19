@@ -13,6 +13,7 @@ import { useAuth } from '@/features/auth/AuthProvider';
 import { useMedicalRecords } from '@/features/medical-records/api';
 import { usePatients } from '@/features/patients/api';
 import { formatAngka, formatTanggalPendek, formatTanggalWaktu, hitungUmur } from '@/utils/format';
+import { rangkumObat } from '@/utils/medications';
 
 function KPI({ label, value, satuan, icon: Icon }: {
   label: string;
@@ -65,6 +66,9 @@ export function DashboardPage() {
       draft: daftarRekam.filter((item) => item.status === 'draft').length,
       pasienBulanIni: daftarPasien.filter((item) => isThisMonth(parseISO(item.created_at))).length,
       kunjungan7Hari,
+      obatTeratas: rangkumObat(
+        daftarRekam.filter((item) => item.status === 'final').map((item) => item.plan),
+      ),
       rekamTerbaru: daftarRekam.slice(0, 5),
       pasienTerbaru: [...daftarPasien]
         .sort((a, b) => b.created_at.localeCompare(a.created_at))
@@ -172,6 +176,43 @@ export function DashboardPage() {
               )}
             </section>
           </div>
+
+          <section className="panel" aria-label="Obat paling sering diresepkan">
+            <div className="panel-header">
+              <div>
+                <h2 className="text-sm font-semibold text-ink">Obat paling sering diresepkan</h2>
+                <p className="mt-0.5 text-xs text-faint">Dari resep pada rekam medis yang telah final</p>
+              </div>
+              <Link to="/resep" className="flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700">
+                Lihat resep <ArrowRight className="h-3 w-3" aria-hidden />
+              </Link>
+            </div>
+            {statistik.obatTeratas.length ? (
+              <div className="space-y-3.5 px-5 py-5">
+                {statistik.obatTeratas.map((obat) => (
+                  <div key={obat.name} className="grid grid-cols-[112px_1fr_40px] items-center gap-3 sm:grid-cols-[180px_1fr_48px] sm:gap-4">
+                    <span className="truncate text-[13px] font-medium text-ink" title={obat.name}>
+                      {obat.name}
+                    </span>
+                    <div className="h-2.5 w-full rounded-sm bg-ground">
+                      <div
+                        className="h-2.5 rounded-sm bg-brand-600 transition-[width] duration-300"
+                        style={{ width: `${(obat.count / statistik.obatTeratas[0].count) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-right text-[13px] text-subtle tabular-nums">
+                      {obat.count}x
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                title="Belum ada resep terekam"
+                description="Grafik akan muncul setelah dokter mencatat resep pada rekam medis final."
+              />
+            )}
+          </section>
 
           <section className="panel" aria-label="Kunjungan terbaru">
             <div className="panel-header">
