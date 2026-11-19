@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search } from 'lucide-react';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
+import { Download, Plus, Search } from 'lucide-react';
 import { EmptyState } from '@/components/common/EmptyState';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatusBadge } from '@/components/common/StatusBadge';
@@ -10,8 +12,9 @@ import { Select } from '@/components/ui/select';
 import { TableSkeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useDebounce } from '@/hooks/useDebounce';
-import { formatTanggalWaktu } from '@/utils/format';
-import type { RecordStatus } from '@/types';
+import { formatTanggal, formatTanggalWaktu } from '@/utils/format';
+import { downloadCsv } from '@/utils/exportCsv';
+import { toVitalSigns, type MedicalRecordWithRelations, type RecordStatus } from '@/types';
 import { useMedicalRecords } from './api';
 
 export function MedicalRecordsPage() {
@@ -26,20 +29,64 @@ export function MedicalRecordsPage() {
   });
   const bisaTambah = role === 'dokter' || role === 'perawat';
 
+  function unduhCsv() {
+    if (!records?.length) return;
+
+    downloadCsv<MedicalRecordWithRelations>(
+      `rekam-medis-${format(new Date(), 'yyyy-MM-dd')}.csv`,
+      records,
+      [
+        { header: 'No. RM', value: (row) => row.patient?.no_rm ?? '' },
+        { header: 'Nama Pasien', value: (row) => row.patient?.full_name ?? '' },
+        { header: 'NIK', value: (row) => row.patient?.nik ?? '' },
+        {
+          header: 'Tanggal Lahir',
+          value: (row) => (row.patient?.date_of_birth ? formatTanggal(row.patient.date_of_birth) : ''),
+        },
+        { header: 'Waktu Kunjungan', value: (row) => formatTanggalWaktu(row.visit_date) },
+        { header: 'Dokter Pemeriksa', value: (row) => row.doctor?.full_name ?? '' },
+        { header: 'Tekanan Darah (mmHg)', value: (row) => toVitalSigns(row.vital_signs).blood_pressure },
+        { header: 'Nadi (x/menit)', value: (row) => toVitalSigns(row.vital_signs).heart_rate || '' },
+        { header: 'Suhu (°C)', value: (row) => toVitalSigns(row.vital_signs).temperature || '' },
+        { header: 'Berat Badan (kg)', value: (row) => toVitalSigns(row.vital_signs).weight || '' },
+        { header: 'Tinggi Badan (cm)', value: (row) => toVitalSigns(row.vital_signs).height || '' },
+        { header: 'Subjektif', value: (row) => row.subjective },
+        { header: 'Objektif', value: (row) => row.objective },
+        { header: 'Assesmen', value: (row) => row.assessment },
+        { header: 'Plan', value: (row) => row.plan },
+        { header: 'Status', value: (row) => (row.status === 'final' ? 'Final' : 'Draft') },
+        { header: 'Dibuat', value: (row) => formatTanggalWaktu(row.created_at) },
+      ],
+    );
+
+    toast.success(`${records.length} rekam medis berhasil diunduh.`);
+  }
+
   return (
     <>
       <PageHeader
         title="Rekam Medis"
         description="Catatan kunjungan dan pemeriksaan pasien."
         actions={
-          bisaTambah && (
-            <Link to="/rekam-medis/baru">
-              <Button>
-                <Plus className="h-4 w-4" aria-hidden />
-                Tambah kunjungan
-              </Button>
-            </Link>
-          )
+          <>
+            <Button
+              variant="secondary"
+              onClick={unduhCsv}
+              disabled={!records?.length}
+              title="Unduh data sesuai filter saat ini"
+            >
+              <Download className="h-4 w-4" aria-hidden />
+              Unduh CSV
+            </Button>
+            {bisaTambah && (
+              <Link to="/rekam-medis/baru">
+                <Button>
+                  <Plus className="h-4 w-4" aria-hidden />
+                  Tambah kunjungan
+                </Button>
+              </Link>
+            )}
+          </>
         }
       />
 
