@@ -29,13 +29,14 @@ src/
 ├── features/
 │   ├── auth/          # Login, sesi, proteksi rute
 │   ├── patients/      # CRUD & pencarian pasien
-│   ├── medical-records/ # SOAP, tanda vital, finalisasi
+│   ├── medical-records/ # SOAP, tanda vital, finalisasi, unduh CSV
+│   ├── prescriptions/ # Ringkasan resep dari Plan rekam medis final
 │   ├── dashboard/     # Ringkasan klinik
 │   └── users/         # Manajemen peran petugas (admin)
 ├── hooks/             # useDebounce
 ├── lib/               # supabase.ts, queryClient.ts, utils.ts
 ├── types/             # database.types.ts, tipe domain
-├── utils/             # format.ts, translateError.ts
+├── utils/             # format.ts, translateError.ts, exportCsv.ts
 ├── App.tsx            # Routing
 └── main.tsx           # Entry point
 supabase/migrations/0001_initial.sql   # Skema + RLS + trigger + RPC
