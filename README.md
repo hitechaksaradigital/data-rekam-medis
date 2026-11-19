@@ -111,7 +111,28 @@ Catatan: admin **sengaja tidak diberi izin** mengubah isi SOAP/diagnosa dokter. 
 
 ---
 
-## 5. Deploy ke cPanel
+## 5. Deploy ke Vercel
+
+Deployment produksi aktif di **https://data-rekam-medis-eight.vercel.app**.
+
+Project Vercel: `hitechaksaradigital-8204s-projects/data-rekam-medis` (terhubung ke repo GitHub). Environment variable Production sudah diisi lewat `npx vercel env add`:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY` (publishable key Supabase — memang dirancang untuk client, bukan secret)
+
+File `vercel.json` berisi rewrite SPA agar rute seperti `/resep` tetap berfungsi saat di-refresh.
+
+Deploy ulang:
+
+```bash
+npx vercel deploy --prod --yes
+```
+
+> Tambahkan `https://data-rekam-medis-eight.vercel.app` ke **Supabase → Authentication → URL Configuration** (Site URL & Redirect URLs) agar alur email/konfirmasi berfungsi di domain produksi.
+
+---
+
+## 6. Deploy ke cPanel
 
 Karena Vite menyisipkan nilai `.env` **saat build**, isi kredensial Supabase terlebih dahulu, lalu build:
 
@@ -133,7 +154,7 @@ Langkah penting:
 
 ---
 
-## 6. Validasi & Keamanan
+## 7. Validasi & Keamanan
 
 - NIK divalidasi tepat 16 digit angka (Zod).
 - Tekanan darah wajib berformat `sistolik/diastolik` (contoh `120/80`).
